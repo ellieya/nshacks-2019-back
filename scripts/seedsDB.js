@@ -3,10 +3,10 @@ const db = require("../models");
 
 // This file empties the User collection and inserts the user below
 
-// mongoose.connect(
-//     process.env.MONGODB_URI ||
-//     "mongodb://localhost/googlebooks"
-// );
+mongoose.connect(
+    process.env.MONGODB_URI ||
+    "mongodb+srv://JQuiroz728:JQuiroz728@cluster0-2ufkm.mongodb.net/test?retryWrites=true&w=majority"
+);
 
 const userSeed = {
     name: "Jorge Quiroz",
