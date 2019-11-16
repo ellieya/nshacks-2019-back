@@ -1,29 +1,40 @@
 const express = require("express");
+const cors = require('cors')
 const path = require("path");
 const PORT = process.env.PORT || 8000;
 const app = express();
 const mongoose = require ('mongoose')
 const routes = require('./routes')
+require('dotenv').config();
 
 // Define middleware here
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(methodOverride('_method'));
 app.use(express.json());
-// Serve up static assets
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
 
-// Define API routes here
-app.use(routes)
-
-// Send every other request to the React app
-// Define any API routes before this runs
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+// Connect to Mongodb
+const uri = process.env.ATLAS_URI;
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+});
+mongoose.set('useFindAndModify', false);
+const connection = mongoose.connection;
+connection.once('open', () => {
+    console.log('Mongodb installed succesfully');
 });
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/googlebooks", {useNewUrlParser: true});
+// Use routes
+app.use(routes);
 
-app.listen(PORT, () => {
-  console.log(`API server now on port ${PORT}!`);
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`)
 });
+
+server.on('listening', () => {
+  setInterval(() => {
+      if(mongoose.connection.readyState === 1){}          
+  }, 
+  60000);
+})
