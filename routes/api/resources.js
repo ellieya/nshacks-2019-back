@@ -27,16 +27,26 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+
+router.route("/:type").get((req, res) => {
+  Resource.findOne({type: req.params.type})
+  .then(resource => res.json(resource))
+  .catch(err => res.status(400).json('Error: ' + err));
+      
+});
+
 router.route('/:id').get((req, res) => {
   Resource.findById(req.params.id)
     .then(resource => res.json(resource))
     .catch(err => res.status(400).json('Error: ' + err));
 });
+
 router.route('/:id').delete((req, res) => {
   Resource.findByIdAndDelete(req.params.id)
     .then(() => res.json('Resource deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });
+
 router.route('/update/:id').post((req, res) => {
   Resource.findById(req.params.id)
     .then(resource => {
