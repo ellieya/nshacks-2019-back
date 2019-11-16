@@ -27,4 +27,30 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/:id').get((req, res) => {
+  Resource.findById(req.params.id)
+    .then(resource => res.json(resource))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+router.route('/:id').delete((req, res) => {
+  Resource.findByIdAndDelete(req.params.id)
+    .then(() => res.json('Resource deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+router.route('/update/:id').post((req, res) => {
+  Resource.findById(req.params.id)
+    .then(resource => {
+      resource.type = req.body.type;
+      resource.name = req.body.name;
+      resource.addressNumber = req.body.addressNumber;
+      resource.streetName = req.body.streetName;
+      resource.phoneNumber = req.body.phoneNumber;
+
+      resource.save()
+        .then(() => res.json('Resource updated!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 module.exports = router;
