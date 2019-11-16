@@ -16,3 +16,10 @@
 // }
 
 // module.exports = { resourceList }
+
+
+
+    // "client": "cd client && npm run start",
+    // "install": "cd client && npm install",
+    // "build": "cd client && npm run build",
+    // "heroku-postbuild": "npm run build"

@@ -1,14 +1,6 @@
 const router = require("express").Router();
 const usersController = require("../../controllers/usersController.js");
 
-function userInfo(userData){
-    return {
-        name: userData.name,
-        age: userData.age,
-        cellNumber: userData.cellNumber
-    }
-}
-
 // Matches with "/api/users"
 router.route("/")
   .get(usersController.findAll)

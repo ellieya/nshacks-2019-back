@@ -1,40 +1,28 @@
 const express = require("express");
-const cors = require('cors')
 const path = require("path");
 const PORT = process.env.PORT || 8000;
 const app = express();
 const mongoose = require ('mongoose')
 const routes = require('./routes')
-require('dotenv').config();
 
 // Define middleware here
-app.use(cors());
-app.use(methodOverride('_method'));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+// Serve up static assets
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
 
-// Connect to Mongodb
-const uri = process.env.ATLAS_URI;
-mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-});
-mongoose.set('useFindAndModify', false);
-const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log('Mongodb installed succesfully');
-});
+// Define API routes here
+app.use(routes)
 
-// Use routes
-app.use(routes);
-
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+// Define any API routes before this runs
+app.get("*", (req, res) => {
+  res.status(404).send('Not found');
 });
 
-server.on('listening', () => {
-  setInterval(() => {
-      if(mongoose.connection.readyState === 1){}          
-  }, 
-  60000);
-})
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://JQuiroz728:JQuiroz728@cluster0-2ufkm.mongodb.net/test?retryWrites=true&w=majority", {useNewUrlParser: true});
+
+app.listen(PORT, () => {
+  console.log(`API server now on port ${PORT}!`);
+});
