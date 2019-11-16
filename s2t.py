@@ -23,6 +23,3 @@
 # result = search()
 # print(result)
 
-
-        
-
