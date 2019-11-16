@@ -1,15 +1,26 @@
-const router = require("express").Router();
-const usersController = require("../../controllers/usersController.js");
+const router = require('express').Router();
+let User = require('../../models/user');
 
-// Matches with "/api/users"
-router.route("/")
-  .get(usersController.findAll)
-  .post(usersController.create);
+router.route('/').get((req, res) => {
+  User.find()
+    .then(users => res.json(users))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
-// Matches with "/api/users/:id"
-router.route("/:id")
-  .get(usersController.findById)
-  .put(usersController.update)
-  .delete(usersController.remove);
+router.route('/add').post((req, res) => {
+  const name = req.body.name;
+  const age = req.body.age;
+  const cellNumber = req.body.cellNumber;
+  
+  const newUser = new User({
+    name,
+    age,
+    cellNumber,
+  });
+
+  newUser.save()
+    .then(() => res.json('User added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
 module.exports = router;

@@ -1,28 +1,30 @@
-const express = require("express");
-const path = require("path");
-const PORT = process.env.PORT || 8000;
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+require('dotenv').config();
+
 const app = express();
-const mongoose = require ('mongoose')
-const routes = require('./routes')
+const port = process.env.PORT || 8000;
 
-// Define middleware here
-app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(cors());
 app.use(express.json());
-// Serve up static assets
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
 
-// Define API routes here
-app.use(routes)
+const uri = process.env.ATLAS_URI;
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
+);
+const connection = mongoose.connection;
+connection.once('open', () => {
+  console.log("MongoDB database connection established successfully");
+})
 
-// Define any API routes before this runs
-app.get("*", (req, res) => {
-  res.status(404).send('Not found');
-});
+const resourcesRouter = require('./routes/api/resources');
+const usersRouter = require('./routes/api/users');
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://JQuiroz728:JQuiroz728@cluster0-2ufkm.mongodb.net/test?retryWrites=true&w=majority", {useNewUrlParser: true});
+app.use('/resources', resourcesRouter);
+app.use('/users', usersRouter);
 
-app.listen(PORT, () => {
-  console.log(`API server now on port ${PORT}!`);
+app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
 });

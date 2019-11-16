@@ -1,15 +1,30 @@
-const router = require("express").Router();
-const resourcesController = require("../../controllers/resourceController.js");
+const router = require('express').Router();
+let Resource = require('../../models/resources');
 
-// Matches with "/api/resources"
-router.route("/")
-  .get(resourcesController.findAll)
-  .post(resourcesController.create);
+router.route('/').get((req, res) => {
+  Resource.find()
+    .then(resources => res.json(resources))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
-// Matches with "/api/resources/list"
-router.route("/list")
-  .get(resourcesController.findAll)
-  .put(resourcesController.update)
-  .delete(resourcesController.remove);
+router.route('/add').post((req, res) => {
+  const type = req.body.type;
+  const name = req.body.name;
+  const addressNumber = req.body.addressNumber;
+  const streetName = req.body.streetName;
+  const phoneNumber = req.body.phoneNumber;
+
+  const newResource = new Resource({
+    type,
+    name,
+    addressNumber,
+    streetName,
+    phoneNumber,
+  });
+
+  newResource.save()
+    .then(() => res.json('Resource added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
 module.exports = router;

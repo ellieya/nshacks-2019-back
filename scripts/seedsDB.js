@@ -3,10 +3,13 @@ const db = require("../models");
 
 // This file empties the User collection and inserts the user below
 
-mongoose.connect(
-    process.env.MONGODB_URI ||
-    "mongodb+srv://JQuiroz728:JQuiroz728@cluster0-2ufkm.mongodb.net/test?retryWrites=true&w=majority"
-);
+// Connect to mongo
+const db = require('./config/keys').mongoURI;
+mongoose
+  .connect(db, { useNewUrlParser: true }) 
+  .then(() => console.log('MongoDB connection established'))
+  .catch(err => console.log(err));
+
 
 const userSeed = {
     name: "Jorge Quiroz",
@@ -28,17 +31,13 @@ const resourceSeed = {
         streetName: "Ninth Ave",
         phoneNumber: 2129240167
     },
-    church: {
-        type: "church",
+    drugs: {
+        type: "rehab",
         name: "St. Patrick's Cathedral",
         addressNumber: 460,
         streetName: "Madison Ave",
         phoneNumber: 212753261
     }
-    
-    
-
-    
 }
 
 db.User
